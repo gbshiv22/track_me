@@ -8,11 +8,7 @@ use App\Http\Controllers\Web\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return response()->json([
-        'message' => 'Track Me API is working!',
-        'status' => 'ok',
-        'timestamp' => now()
-    ]);
+    return 'Hello World! Track Me is working!';
 });
 
 // Health check route for Render
