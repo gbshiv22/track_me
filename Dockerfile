@@ -56,6 +56,12 @@ RUN php artisan key:generate
 # Run database migrations
 RUN php artisan migrate --force
 
+# Clear all caches
+RUN php artisan config:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
+    php artisan cache:clear
+
 # Expose port 80
 EXPOSE 80
 
