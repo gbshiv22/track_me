@@ -8,7 +8,7 @@ use App\Http\Controllers\Web\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
 // Health check route for Render
