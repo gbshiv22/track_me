@@ -1,8 +1,9 @@
 services:
   - type: web
     name: track-me-app
-    runtime: docker
-    dockerfilePath: ./Dockerfile.production
+    runtime: php
+    buildCommand: composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
     healthCheckPath: /health
     envVars:
       - key: APP_ENV
@@ -18,7 +19,7 @@ services:
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
-        value: /var/www/html/database/database.sqlite
+        value: /opt/render/project/src/database/database.sqlite
       - key: BROADCAST_DRIVER
         value: log
       - key: CACHE_STORE

@@ -1,4 +1,4 @@
-# Simple Dockerfile for Track Me App - Production (SQLite)
+# Minimal Dockerfile for Track Me App - Production (SQLite)
 FROM php:8.3-apache
 
 WORKDIR /var/www/html
@@ -25,33 +25,27 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Copy composer files
+# Copy composer files and install dependencies
 COPY composer.json composer.lock ./
-
-# Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Copy application code
 COPY . .
 
-# Create necessary directories
+# Create directories and set permissions in one step
 RUN mkdir -p storage/app/public \
     && mkdir -p storage/framework/cache \
     && mkdir -p storage/framework/sessions \
     && mkdir -p storage/framework/views \
     && mkdir -p storage/logs \
     && mkdir -p bootstrap/cache \
-    && mkdir -p database
+    && mkdir -p database \
+    && touch database/database.sqlite \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 storage bootstrap/cache database
 
-# Create .env file and SQLite database
-RUN cp .env.example .env \
-    && touch database/database.sqlite
-
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 storage \
-    && chmod -R 755 bootstrap/cache \
-    && chmod -R 755 database
+# Create .env file
+RUN cp .env.example .env
 
 # Optimize Laravel
 RUN php artisan config:cache \
