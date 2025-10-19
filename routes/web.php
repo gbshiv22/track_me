@@ -7,6 +7,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Web\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/test', function () {
+    return 'Test route is working!';
+});
+
 Route::get('/', function () {
     return 'Hello World! Track Me is working!';
 });
