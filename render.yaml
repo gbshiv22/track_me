@@ -12,7 +12,7 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: APP_URL
-        value: https://track-me-app.onrender.com
+        value: https://track-meq.onrender.com
       - key: LOG_LEVEL
         value: error
       - key: DB_CONNECTION
@@ -21,7 +21,7 @@ services:
         value: /var/www/html/database/database.sqlite
       - key: BROADCAST_DRIVER
         value: log
-      - key: CACHE_DRIVER
+      - key: CACHE_STORE
         value: file
       - key: FILESYSTEM_DISK
         value: local
