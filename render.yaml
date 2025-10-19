@@ -1,15 +1,24 @@
 services:
   - type: web
     name: track-me-app
-    env: php
-    buildCommand: composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache
-    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    runtime: docker
+    dockerfilePath: ./Dockerfile.production
     healthCheckPath: /health
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: https://track-me-app.onrender.com
+      - key: LOG_LEVEL
+        value: error
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /var/www/html/database/database.sqlite
       - key: BROADCAST_DRIVER
         value: log
       - key: CACHE_DRIVER
@@ -38,17 +47,5 @@ services:
         value: hello@example.com
       - key: MAIL_FROM_NAME
         value: Track Me
-
-  - type: pserv
-    name: track-me-db
-    env: mysql
-    plan: free
-    envVars:
-      - key: MYSQL_DATABASE
-        value: track_me
-      - key: MYSQL_USER
-        value: track_me_user
-      - key: MYSQL_PASSWORD
-        generateValue: true
-      - key: MYSQL_ROOT_PASSWORD
-        generateValue: true
+      - key: TRACKING_INTERVAL
+        value: 10
