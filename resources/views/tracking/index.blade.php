@@ -123,10 +123,15 @@
 
             <!-- Track Me Button -->
             <div class="text-center mb-8">
-                <button id="track-button" 
-                        class="btn btn-success btn-xl">
-                    Start Tracking
-                </button>
+                <div class="relative inline-block w-full max-w-xs">
+                    <button id="track-button" class="btn btn-success btn-xl w-full flex items-center justify-center" style="min-width:150px;">
+                        <svg id="spinner" class="animate-spin h-5 w-5 mr-2 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
+                        <span id="track-btn-text">Start Tracking</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Instructions -->
@@ -542,14 +547,39 @@
         });
 
         // Button click handlers
+        // Overwrite the tracking button click listener to show spinner during AJAX
+        const spinner = document.getElementById('spinner');
+        const trackBtnText = document.getElementById('track-btn-text');
+        function setLoading(isLoading) {
+            if (isLoading) {
+                spinner.classList.remove('hidden');
+                trackBtnText.classList.add('opacity-50');
+                trackButton.disabled = true;
+            } else {
+                spinner.classList.add('hidden');
+                trackBtnText.classList.remove('opacity-50');
+                trackButton.disabled = false;
+            }
+        }
+        // Update event listeners for Start/Stop Tracking to show spinner
         trackButton.addEventListener('click', function() {
             if (!isTracking) {
+                setLoading(true);
                 startTracking();
             } else {
+                setLoading(true);
                 stopTracking();
             }
         });
-
+        // Overwrite success/failure callbacks:
+        function afterTrackRequestComplete() { setLoading(false); }
+        // Patch into .then/.catch of AJAX in startTracking/stopTracking
+        // In startTracking:
+        // ...
+        .then(data => { /* ... */ afterTrackRequestComplete(); })
+        .catch(err => { /* ... */ afterTrackRequestComplete(); });
+        // Same for stopTracking
+        // ...
         resetMapButton.addEventListener('click', resetMap);
         locateMeButton.addEventListener('click', locateUser);
         fullscreenToggleButton.addEventListener('click', toggleFullscreen);
