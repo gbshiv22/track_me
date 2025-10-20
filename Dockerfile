@@ -21,6 +21,14 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Install Node.js (required for Vite)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
+# Copy and install JS dependencies before building assets
+COPY package.json ./
+RUN npm install
+
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
@@ -28,7 +36,10 @@ RUN a2enmod rewrite
 COPY docker/apache-config.conf /etc/apache2/sites-available/000-default.conf
 
 # Copy application files
-COPY . /var/www/html
+COPY . .
+
+# Build frontend assets (Vite)
+RUN npm run build
 
 # Create necessary directories and set proper permissions
 RUN mkdir -p /var/www/html/storage/app/public \
