@@ -47,8 +47,26 @@ RUN mkdir -p /var/www/html/storage/app/public \
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Create .env file for Docker
-RUN cp .env.example .env
+# Create .env file for Docker with proper settings
+RUN echo 'APP_NAME="Track Me"' > .env && \
+    echo 'APP_ENV=production' >> .env && \
+    echo 'APP_KEY=' >> .env && \
+    echo 'APP_DEBUG=false' >> .env && \
+    echo 'APP_URL=http://localhost' >> .env && \
+    echo 'LOG_CHANNEL=stack' >> .env && \
+    echo 'LOG_LEVEL=error' >> .env && \
+    echo 'DB_CONNECTION=sqlite' >> .env && \
+    echo 'DB_DATABASE=/var/www/html/database/database.sqlite' >> .env && \
+    echo 'BROADCAST_DRIVER=log' >> .env && \
+    echo 'CACHE_STORE=file' >> .env && \
+    echo 'FILESYSTEM_DISK=local' >> .env && \
+    echo 'QUEUE_CONNECTION=sync' >> .env && \
+    echo 'SESSION_DRIVER=file' >> .env && \
+    echo 'SESSION_LIFETIME=120' >> .env && \
+    echo 'MAIL_MAILER=log' >> .env && \
+    echo 'MAIL_FROM_ADDRESS="hello@example.com"' >> .env && \
+    echo 'MAIL_FROM_NAME="Track Me"' >> .env && \
+    echo 'TRACKING_INTERVAL=10' >> .env
 
 # Generate application key
 RUN php artisan key:generate
